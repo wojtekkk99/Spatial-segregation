@@ -1,8 +1,6 @@
 import numpy as np
 import random
-import matplotlib.pyplot as plt
 from statistics import mean
-from matplotlib.colors import ListedColormap
 from district import District
 from city import City
 
@@ -21,12 +19,14 @@ class Schelling:
         self.board = self.city.generate_board()
         self.periodic_board = self.city.get_periodic(self.board)
         self.rases, self.salaries = self.district.get_district_features()
+        self.board_size = self.periodic_board.shape[0]
+        self.name = "Schelling"
+        
 
-
-    def choose_new_position(self, empty_houses, row, col, board_size):
+    def choose_new_position(self, empty_houses, row, col):
         periodic_positions = {
-            0: board_size-2,
-            board_size-1: 1
+            0: self.board_size-2,
+            self.board_size-1: 1
         }
         random_house = random.choice(empty_houses)
         new_row = row + random_house[0] - 1
@@ -70,8 +70,7 @@ class Schelling:
         for step in range(self.n_steps):  
             moves = {}
             for (row, col), _ in np.ndenumerate(self.periodic_board):
-                n = self.periodic_board.shape[0]
-                if row != 0 and col != 0 and row != n-1 and col != n-1:
+                if row != 0 and col != 0 and row != self.board_size-1 and col != self.board_size-1:
                     value = self.periodic_board[row, col]
                     if value != -1:    # -1 -> empty space
                         neighborhood =self.periodic_board[
@@ -87,7 +86,7 @@ class Schelling:
                                 )
                             )
                             if len(empty_houses) != 0:
-                                new_row, new_col = self.choose_new_position(empty_houses, row, col, n)
+                                new_row, new_col = self.choose_new_position(empty_houses, row, col, self.board_size)
                                 moves[(row, col)] = (new_row, new_col)
 
             valid_moves = self.get_valid_moves(moves)
@@ -96,7 +95,7 @@ class Schelling:
                 self.periodic_board[new_pos[0], new_pos[1]] = value
                 self.periodic_board[pos[0], pos[1]] = -1
 
-            segregated_board = self.periodic_board[1:n-1, 1:n-1]
+            segregated_board = self.periodic_board[1:self.board_size-1, 1:self.board_size-1]
             self.periodic_board = self.city.get_periodic(segregated_board)
             self.average_si.append(mean(self.si))
             if step%2000 == 0: print(f'step: {step}, mean si: {mean(self.si)}')

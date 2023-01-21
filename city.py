@@ -2,16 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from district import District
+from dataclasses import dataclass, field
 
 
-class City:
-    def __init__(self, district: District, size: int = 70, agents_ratio: float = 0.8) -> None:
-        self.district = district
-        self.size = size
-        self.agents_ratio = agents_ratio
+@dataclass
+class City():
+    district: District
+    size: int = 70
+    agents_ratio: float = 0.8
+    n_agents: int = field(init=False)
+    cmap: ListedColormap = field(init=False)
 
-    def set_params(self):
-        self.district.extract_populations()
+    def __post_init__(self):
         populations = self.district.populations
         self.n_agents = len(populations)
         agent_colors = list(populations.values())
