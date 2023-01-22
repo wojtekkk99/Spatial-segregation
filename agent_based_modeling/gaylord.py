@@ -12,8 +12,8 @@ class Gaylord:
         self.a = a
         self.n_steps = n_steps
     
-        self.a_rase = a+2
-        self.a_salary = a+2
+        self.a_rase = a+3
+        self.a_salary = a+3
         self.si = []
         self.average_si = []
         self.board = self.city.generate_board()
@@ -115,14 +115,12 @@ class Gaylord:
                     if value != -1:    # agents
                         n_similar, n_similar_rase, n_similar_salary = self.find_n_similar(neighborhood, value)
                         self.si.append(n_similar)
-                        # if n_similar < self.a and n_similar_rase < self.a_rase and n_similar_salary < self.a_salary:
-                        if n_similar < self.a:   # without rase/salary similarities
+                        if n_similar < self.a and n_similar_rase < self.a_rase and n_similar_salary < self.a_salary:
                             agents_ready_to_move[value].append((row, col))
                     else:              # empty spaces
                         for population_id in range(self.n_populations):
                             n_similar, n_similar_rase, n_similar_salary = self.find_n_similar(neighborhood, population_id, True)
-                            # if n_similar >= self.a or n_similar_rase >= self.a_rase or n_similar_salary >= self.a_salary:
-                            if n_similar >= self.a:   # without rase/salary similarities
+                            if n_similar >= self.a or n_similar_rase >= self.a_rase or n_similar_salary >= self.a_salary:
                                 empty_spaces_for_agents[population_id].append((row, col))                
                              
             empty_spaces_for_agents = self.remove_duplicates(empty_spaces_for_agents)
