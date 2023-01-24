@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 from statistics import mean
 from district import District
 from city import City
@@ -86,7 +87,7 @@ class Schelling:
                                 )
                             )
                             if len(empty_houses) != 0:
-                                new_row, new_col = self.choose_new_position(empty_houses, row, col, self.board_size)
+                                new_row, new_col = self.choose_new_position(empty_houses, row, col)
                                 moves[(row, col)] = (new_row, new_col)
 
             valid_moves = self.get_valid_moves(moves)
@@ -96,6 +97,9 @@ class Schelling:
                 self.periodic_board[pos[0], pos[1]] = -1
 
             segregated_board = self.periodic_board[1:self.board_size-1, 1:self.board_size-1]
+            plt.figure(figsize=(7,7))
+            plt.imshow(segregated_board, cmap=self.city.cmap)
+            plt.savefig(f'states/{step}.png')
             self.periodic_board = self.city.get_periodic(segregated_board)
             self.average_si.append(mean(self.si))
             if step%2000 == 0: print(f'step: {step}, mean si: {mean(self.si)}')

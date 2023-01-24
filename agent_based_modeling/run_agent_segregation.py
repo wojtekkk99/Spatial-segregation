@@ -7,7 +7,7 @@ from visualization import Visualization
 
 if __name__ == "__main__":
     district = District()
-    city = City(district, size=80, agents_ratio=0.5)
+    city = City(district, size=80, agents_ratio=0.7)
 
     # Gaylord algorithm
     gaylord = Gaylord(city, district, a=3)
